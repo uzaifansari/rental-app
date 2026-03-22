@@ -1,0 +1,108 @@
+.detail-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+@media (max-width: 768px) {
+  .detail-page { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem; }
+}
+
+/* Images */
+.detail-images { display: flex; flex-direction: column; gap: 12px; }
+.main-image {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  background: var(--surface);
+}
+.main-image img { width: 100%; height: 100%; object-fit: cover; }
+.unavailable-badge {
+  position: absolute; inset: 0;
+  background: rgba(14,14,14,0.7);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--danger); font-size: 18px; font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+.image-thumbs { display: flex; gap: 8px; overflow-x: auto; }
+.thumb {
+  width: 72px; height: 90px; object-fit: cover;
+  border-radius: 8px; cursor: pointer; opacity: 0.6;
+  border: 2px solid transparent; transition: all 0.2s;
+  flex-shrink: 0;
+}
+.thumb.active, .thumb:hover { opacity: 1; border-color: var(--accent); }
+
+/* Info */
+.detail-header { margin-bottom: 1.5rem; }
+.detail-category {
+  display: inline-block;
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 8px;
+}
+.detail-title { font-size: 2rem; margin-bottom: 10px; }
+.detail-price { font-size: 2rem; font-weight: 700; color: var(--accent); }
+.detail-price span { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+
+.detail-meta {
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+  padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.meta-item { display: flex; flex-direction: column; gap: 2px; }
+.meta-item span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.meta-item strong { font-size: 15px; }
+
+.detail-desc { color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem; font-size: 14px; }
+
+/* Rental Form */
+.rental-form-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+.rental-form-wrap h3 { font-size: 18px; margin-bottom: 1.2rem; }
+.rental-error {
+  background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.3);
+  color: var(--danger); padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 1rem;
+}
+.rental-success {
+  background: rgba(92,184,122,0.1); border: 1px solid rgba(92,184,122,0.3);
+  color: var(--success); padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 1rem;
+}
+.rental-form { display: flex; flex-direction: column; gap: 1rem; }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; }
+.form-group input, .form-group textarea {
+  padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;
+  color-scheme: dark;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+.form-group textarea { resize: none; }
+.form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); }
+
+.price-summary {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; background: var(--accent-soft);
+  border-radius: var(--radius-sm); font-size: 14px; color: var(--text-muted);
+}
+.price-summary strong { font-size: 18px; color: var(--accent); }
+
+.owner-note {
+  padding: 14px 18px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text-muted); font-size: 14px;
+}
+
+/* Loading */
+.detail-loading { padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
+.detail-skeleton {
+  height: 600px; background: var(--surface); border-radius: var(--radius);
+  animation: pulse 1.5s ease-in-out infinite;
+}

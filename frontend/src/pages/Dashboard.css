@@ -1,0 +1,116 @@
+.dashboard-page {
+  max-width: 1100px; margin: 0 auto;
+  padding: 2.5rem 2rem; min-height: calc(100vh - 64px);
+}
+
+.dashboard-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 2rem;
+}
+.dashboard-header h1 { font-size: 2rem; margin-bottom: 4px; }
+.dash-sub { color: var(--text-muted); font-size: 14px; }
+.btn-new {
+  padding: 10px 20px; background: var(--accent); color: #0e0e0e;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600; transition: background 0.2s;
+}
+.btn-new:hover { background: var(--accent-hover); }
+
+/* Stats */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+@media (max-width: 640px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.2rem 1.5rem;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent); }
+.stat-card > span:last-child { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Tabs */
+.dash-tabs {
+  display: flex; gap: 4px; margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border); padding-bottom: 0;
+}
+.dash-tab {
+  padding: 10px 20px; background: transparent; border: none;
+  color: var(--text-muted); font-size: 14px; font-weight: 500;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all 0.2s; position: relative;
+}
+.dash-tab:hover { color: var(--text); }
+.dash-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; background: var(--accent); color: #0e0e0e;
+  border-radius: 50%; font-size: 11px; font-weight: 700; margin-left: 6px;
+}
+
+.dash-section { animation: fadeUp 0.3s ease; }
+.dash-empty { padding: 3rem; text-align: center; color: var(--text-muted); }
+.dash-empty button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 14px; }
+
+/* My Listings Grid */
+.my-listings-grid { display: flex; flex-direction: column; gap: 1rem; }
+.my-listing-card {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem;
+  transition: border-color 0.2s;
+}
+.my-listing-card:hover { border-color: var(--accent); }
+.my-listing-card img {
+  width: 70px; height: 90px; object-fit: cover;
+  border-radius: var(--radius-sm); flex-shrink: 0;
+}
+.my-listing-info { flex: 1; }
+.my-listing-title { font-weight: 600; margin-bottom: 4px; }
+.my-listing-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
+.availability-tag {
+  font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.availability-tag.avail { background: rgba(92,184,122,0.15); color: var(--success); }
+.availability-tag.not-avail { background: rgba(224,92,92,0.15); color: var(--danger); }
+.btn-delete {
+  padding: 7px 14px; background: transparent; border: 1px solid var(--border);
+  color: var(--danger); border-radius: var(--radius-sm); font-size: 13px;
+  transition: all 0.2s;
+}
+.btn-delete:hover { background: rgba(224,92,92,0.1); border-color: var(--danger); }
+
+/* Rental Cards */
+.rental-card {
+  display: flex; gap: 1rem; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1rem; margin-bottom: 1rem;
+}
+.rental-img-wrap img {
+  width: 70px; height: 90px; object-fit: cover;
+  border-radius: var(--radius-sm); flex-shrink: 0;
+}
+.rental-info { flex: 1; }
+.rental-title { font-weight: 600; margin-bottom: 6px; }
+.rental-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+.rental-price { font-size: 16px; color: var(--accent); font-weight: 600; margin-top: 6px; }
+.rental-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.rental-status { font-size: 13px; font-weight: 600; white-space: nowrap; }
+.action-btns { display: flex; gap: 8px; }
+.btn-accept {
+  padding: 7px 14px; background: rgba(92,184,122,0.15); color: var(--success);
+  border: 1px solid var(--success); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+  transition: background 0.2s;
+}
+.btn-accept:hover { background: rgba(92,184,122,0.25); }
+.btn-cancel {
+  padding: 7px 14px; background: transparent; color: var(--danger);
+  border: 1px solid var(--danger); border-radius: var(--radius-sm); font-size: 13px;
+  transition: background 0.2s;
+}
+.btn-cancel:hover { background: rgba(224,92,92,0.1); }
+.btn-complete {
+  padding: 7px 14px; background: var(--accent-soft); color: var(--accent);
+  border: 1px solid var(--accent); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+  transition: background 0.2s; white-space: nowrap;
+}
+.btn-complete:hover { background: rgba(201,169,110,0.2); }
