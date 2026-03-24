@@ -2,14 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./ListingCard.css";
 
+const PLACEHOLDER = "https://placehold.co/400x500?text=No+Image";
+
 const ListingCard = ({ listing }) => {
   const { _id, title, category, size, pricePerDay, images, city, owner } = listing;
-  const img = images?.[0] || "https://via.placeholder.com/400x500?text=No+Image";
+  const img = images && images.length > 0 ? images[0] : PLACEHOLDER;
 
   return (
     <Link to={`/listings/${_id}`} className="listing-card">
       <div className="card-image-wrap">
-        <img src={img} alt={title} className="card-image" />
+        <img src={img} alt={title} className="card-image" onError={(e) => { e.target.src = PLACEHOLDER; }} />
         <span className="card-badge">{category}</span>
       </div>
       <div className="card-body">

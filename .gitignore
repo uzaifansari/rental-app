@@ -1,0 +1,12 @@
+# Ignore all node_modules in any subfolder
+node_modules/
+
+# Ignore environment variables (very important for MERN)
+.env
+
+# Ignore build folders
+frontend/dist/
+frontend/build/
+
+# Ignore debug logs
+*.log

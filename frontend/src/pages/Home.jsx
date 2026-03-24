@@ -9,7 +9,7 @@ const SIZES = ["", "XS", "S", "M", "L", "XL", "XXL", "free size"];
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { listings, loading } = useSelector((s) => s.listings);
+  const { listings = [], loading } = useSelector((s) => s.listings);  // ← default to []
   const [filters, setFilters] = useState({ search: "", category: "", size: "", city: "" });
 
   useEffect(() => { dispatch(fetchListings()); }, [dispatch]);
