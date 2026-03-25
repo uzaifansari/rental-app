@@ -6,8 +6,55 @@ import { fetchMyRentals, fetchIncomingRentals, updateRentalStatus } from "../red
 import "./Dashboard.css";
 
 const STATUS_COLORS = {
-  pending: "#c9a96e", accepted: "#5cb87a",
-  active: "#5b9bd5", completed: "#7a7570", cancelled: "#e05c5c",
+  pending: "#c9a96e",
+  accepted: "#5cb87a",
+  active: "#5b9bd5",
+  completed: "#7a7570",
+  cancelled: "#e05c5c",
+};
+
+// Defined OUTSIDE component so it doesn't re-create on every render
+const RentalCard = ({ rental, isIncoming, onStatusChange }) => {
+  const status = rental.status;
+
+  return (
+    <div className="rental-card">
+      <div className="rental-img-wrap">
+        <img src={rental.listing?.images?.[0] || "https://placehold.co/100x120?text=No+Image"} alt="" />
+      </div>
+      <div className="rental-info">
+        <p className="rental-title">{rental.listing?.title}</p>
+        <p className="rental-meta">
+          {new Date(rental.startDate).toLocaleDateString()} → {new Date(rental.endDate).toLocaleDateString()}
+        </p>
+        <p className="rental-meta">📍 {rental.meetupLocation}</p>
+        {isIncoming && <p className="rental-meta">Renter: <strong>{rental.renter?.name}</strong> · {rental.renter?.phone}</p>}
+        {!isIncoming && <p className="rental-meta">Lender: <strong>{rental.lender?.name}</strong> · {rental.lender?.phone}</p>}
+        <p className="rental-price">₹{rental.totalPrice}</p>
+      </div>
+      <div className="rental-actions">
+        <span className="rental-status" style={{ color: STATUS_COLORS[status] }}>
+          ● {status}
+        </span>
+
+        {/* Lender actions */}
+        {isIncoming && status === "pending" && (
+          <div className="action-btns">
+            <button className="btn-accept" onClick={() => onStatusChange(rental._id, "accept")}>Accept</button>
+            <button className="btn-cancel" onClick={() => onStatusChange(rental._id, "cancel")}>Decline</button>
+          </div>
+        )}
+        {isIncoming && status === "accepted" && (
+          <button className="btn-complete" onClick={() => onStatusChange(rental._id, "complete")}>Mark Complete</button>
+        )}
+
+        {/* Renter actions — only show cancel if still pending */}
+        {!isIncoming && status === "pending" && (
+          <button className="btn-cancel" onClick={() => onStatusChange(rental._id, "cancel")}>Cancel</button>
+        )}
+      </div>
+    </div>
+  );
 };
 
 const Dashboard = () => {
@@ -25,42 +72,9 @@ const Dashboard = () => {
     dispatch(fetchIncomingRentals());
   }, [user, dispatch, navigate]);
 
-  const handleStatus = (id, action) => dispatch(updateRentalStatus({ id, action }));
-
-  const RentalCard = ({ rental, isIncoming }) => (
-    <div className="rental-card">
-      <div className="rental-img-wrap">
-        <img src={rental.listing?.images?.[0] || "https://via.placeholder.com/100"} alt="" />
-      </div>
-      <div className="rental-info">
-        <p className="rental-title">{rental.listing?.title}</p>
-        <p className="rental-meta">
-          {new Date(rental.startDate).toLocaleDateString()} → {new Date(rental.endDate).toLocaleDateString()}
-        </p>
-        <p className="rental-meta">📍 {rental.meetupLocation}</p>
-        {isIncoming && <p className="rental-meta">Renter: <strong>{rental.renter?.name}</strong> · {rental.renter?.phone}</p>}
-        {!isIncoming && <p className="rental-meta">Lender: <strong>{rental.lender?.name}</strong> · {rental.lender?.phone}</p>}
-        <p className="rental-price">₹{rental.totalPrice}</p>
-      </div>
-      <div className="rental-actions">
-        <span className="rental-status" style={{ color: STATUS_COLORS[rental.status] }}>
-          ● {rental.status}
-        </span>
-        {isIncoming && rental.status === "pending" && (
-          <div className="action-btns">
-            <button className="btn-accept" onClick={() => handleStatus(rental._id, "accept")}>Accept</button>
-            <button className="btn-cancel" onClick={() => handleStatus(rental._id, "cancel")}>Decline</button>
-          </div>
-        )}
-        {isIncoming && rental.status === "accepted" && (
-          <button className="btn-complete" onClick={() => handleStatus(rental._id, "complete")}>Mark Complete</button>
-        )}
-        {!isIncoming && rental.status === "pending" && (
-          <button className="btn-cancel" onClick={() => handleStatus(rental._id, "cancel")}>Cancel</button>
-        )}
-      </div>
-    </div>
-  );
+  const handleStatus = (id, action) => {
+    dispatch(updateRentalStatus({ id, action }));
+  };
 
   return (
     <div className="dashboard-page">
@@ -101,7 +115,7 @@ const Dashboard = () => {
             <div className="my-listings-grid">
               {myListings.map((l) => (
                 <div key={l._id} className="my-listing-card">
-                  <img src={l.images?.[0] || "https://via.placeholder.com/200"} alt={l.title} />
+                  <img src={l.images?.[0] || "https://placehold.co/200x240?text=No+Image"} alt={l.title} />
                   <div className="my-listing-info">
                     <p className="my-listing-title">{l.title}</p>
                     <p className="my-listing-meta">₹{l.pricePerDay}/day · {l.size} · {l.city}</p>
@@ -123,7 +137,9 @@ const Dashboard = () => {
           {myRentals.length === 0 ? (
             <div className="dash-empty">No rentals yet. <button onClick={() => navigate("/")}>Browse items →</button></div>
           ) : (
-            myRentals.map((r) => <RentalCard key={r._id} rental={r} isIncoming={false} />)
+            myRentals.map((r) => (
+              <RentalCard key={r._id} rental={r} isIncoming={false} onStatusChange={handleStatus} />
+            ))
           )}
         </div>
       )}
@@ -134,7 +150,9 @@ const Dashboard = () => {
           {incomingRentals.length === 0 ? (
             <div className="dash-empty">No incoming requests yet.</div>
           ) : (
-            incomingRentals.map((r) => <RentalCard key={r._id} rental={r} isIncoming={true} />)
+            incomingRentals.map((r) => (
+              <RentalCard key={r._id} rental={r} isIncoming={true} onStatusChange={handleStatus} />
+            ))
           )}
         </div>
       )}

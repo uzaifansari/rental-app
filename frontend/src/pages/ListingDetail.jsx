@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchListingById } from "../redux/slices/listingSlice";
-import { requestRental, clearRentalMessages } from "../redux/slices/rentalSlice";
+import { requestRental, clearRentalMessages, fetchMyRentals } from "../redux/slices/rentalSlice";
 import "./ListingDetail.css";
 
 const ListingDetail = () => {
@@ -10,15 +10,25 @@ const ListingDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { selected: listing, loading } = useSelector((s) => s.listings);
-  const { loading: rentalLoading, error: rentalError, success } = useSelector((s) => s.rentals);
+  const { loading: rentalLoading, error: rentalError, success, myRentals } = useSelector((s) => s.rentals);
   const { user } = useSelector((s) => s.auth);
 
   const [activeImg, setActiveImg] = useState(0);
   const [form, setForm] = useState({ startDate: "", endDate: "", meetupLocation: "", meetupNote: "" });
   const [days, setDays] = useState(0);
 
-  useEffect(() => { dispatch(fetchListingById(id)); return () => dispatch(clearRentalMessages()); }, [id, dispatch]);
+  useEffect(() => {
+    dispatch(fetchListingById(id));
+    if (user) dispatch(fetchMyRentals()); // fetch user's rentals to check duplicates
+    return () => dispatch(clearRentalMessages());
+  }, [id, dispatch, user]);
+
   useEffect(() => { if (success) { setTimeout(() => navigate("/dashboard"), 1500); } }, [success, navigate]);
+
+  // Check if user already has an active request for this listing
+  const existingRental = myRentals?.find(
+    (r) => r.listing?._id === id && ["pending", "accepted", "active"].includes(r.status)
+  );
 
   const handleDateChange = (e) => {
     const updated = { ...form, [e.target.name]: e.target.value };
@@ -48,7 +58,7 @@ const ListingDetail = () => {
       {/* Images */}
       <div className="detail-images">
         <div className="main-image">
-          <img src={listing.images?.[activeImg] || "https://via.placeholder.com/600x700"} alt={listing.title} />
+          <img src={listing.images?.[activeImg] || "https://placehold.co/600x700?text=No+Image"} alt={listing.title} />
           {!listing.isAvailable && <div className="unavailable-badge">Not Available</div>}
         </div>
         {listing.images?.length > 1 && (
@@ -77,8 +87,21 @@ const ListingDetail = () => {
 
         <p className="detail-desc">{listing.description}</p>
 
-        {/* Rental Form */}
-        {!isOwner && listing.isAvailable && (
+        {/* Already requested */}
+        {existingRental && (
+          <div className="already-requested">
+            <p className="already-requested-title">✦ You already have a request for this item</p>
+            <p className="already-requested-sub">
+              Status: <span className={`status-pill status-${existingRental.status}`}>{existingRental.status}</span>
+            </p>
+            <button className="btn-dashboard" onClick={() => navigate("/dashboard")}>
+              Check status in Dashboard →
+            </button>
+          </div>
+        )}
+
+        {/* Rental Form — only show if no existing request */}
+        {!isOwner && listing.isAvailable && !existingRental && (
           <div className="rental-form-wrap">
             <h3>Request to Rent</h3>
             {rentalError && <div className="rental-error">{rentalError}</div>}
@@ -125,7 +148,7 @@ const ListingDetail = () => {
         {isOwner && (
           <div className="owner-note">✦ This is your listing. View requests in your Dashboard.</div>
         )}
-        {!listing.isAvailable && !isOwner && (
+        {!listing.isAvailable && !isOwner && !existingRental && (
           <div className="owner-note" style={{ color: "var(--danger)" }}>This item is currently rented out.</div>
         )}
       </div>

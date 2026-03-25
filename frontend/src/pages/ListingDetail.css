@@ -106,3 +106,48 @@
   height: 600px; background: var(--surface); border-radius: var(--radius);
   animation: pulse 1.5s ease-in-out infinite;
 }
+
+.already-requested {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.already-requested-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--accent);
+}
+.already-requested-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.status-pill {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.status-pending  { background: rgba(201,169,110,0.15); color: var(--accent); }
+.status-accepted { background: rgba(92,184,122,0.15);  color: var(--success); }
+.status-active   { background: rgba(91,155,213,0.15);  color: #5b9bd5; }
+.btn-dashboard {
+  padding: 10px 18px;
+  background: var(--accent);
+  color: #0e0e0e;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background 0.2s;
+}
+.btn-dashboard:hover { background: var(--accent-hover); }

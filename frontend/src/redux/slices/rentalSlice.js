@@ -28,10 +28,13 @@ export const fetchIncomingRentals = createAsyncThunk("rentals/fetchIncoming", as
   }
 });
 
-export const updateRentalStatus = createAsyncThunk("rentals/updateStatus", async ({ id, action }, { rejectWithValue }) => {
+// After updating status, re-fetch both lists so UI is always in sync
+export const updateRentalStatus = createAsyncThunk("rentals/updateStatus", async ({ id, action }, { dispatch, rejectWithValue }) => {
   try {
-    const res = await api.put(`/rentals/${id}/${action}`);
-    return res.data.rental;
+    await api.put(`/rentals/${id}/${action}`);
+    // Re-fetch fresh data from server
+    dispatch(fetchMyRentals());
+    dispatch(fetchIncomingRentals());
   } catch (err) {
     return rejectWithValue(err.response?.data?.message);
   }
@@ -55,16 +58,29 @@ const rentalSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(requestRental.pending, (s) => { s.loading = true; s.error = null; })
-      .addCase(requestRental.fulfilled, (s, a) => { s.loading = false; s.success = "Rental requested!"; s.myRentals.unshift(a.payload); })
+      .addCase(requestRental.fulfilled, (s, a) => {
+        s.loading = false;
+        s.success = "Rental requested!";
+        s.myRentals.unshift(a.payload);
+      })
       .addCase(requestRental.rejected, (s, a) => { s.loading = false; s.error = a.payload; })
 
-      .addCase(fetchMyRentals.fulfilled, (s, a) => { s.myRentals = a.payload; })
-      .addCase(fetchIncomingRentals.fulfilled, (s, a) => { s.incomingRentals = a.payload; })
+      .addCase(fetchMyRentals.pending, (s) => { s.loading = true; })
+      .addCase(fetchMyRentals.fulfilled, (s, a) => {
+        s.loading = false;
+        s.myRentals = Array.isArray(a.payload) ? a.payload : [];
+      })
+      .addCase(fetchMyRentals.rejected, (s) => { s.loading = false; })
 
-      .addCase(updateRentalStatus.fulfilled, (s, a) => {
-        const updated = a.payload;
-        s.incomingRentals = s.incomingRentals.map((r) => r._id === updated._id ? updated : r);
-        s.myRentals = s.myRentals.map((r) => r._id === updated._id ? updated : r);
+      .addCase(fetchIncomingRentals.pending, (s) => { s.loading = true; })
+      .addCase(fetchIncomingRentals.fulfilled, (s, a) => {
+        s.loading = false;
+        s.incomingRentals = Array.isArray(a.payload) ? a.payload : [];
+      })
+      .addCase(fetchIncomingRentals.rejected, (s) => { s.loading = false; })
+
+      .addCase(updateRentalStatus.rejected, (s, a) => {
+        s.error = a.payload;
       });
   },
 });
