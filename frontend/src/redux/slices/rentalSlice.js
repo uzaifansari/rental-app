@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axios";
+import { fetchMyListings } from "./listingSlice";
 
 export const requestRental = createAsyncThunk("rentals/request", async (data, { rejectWithValue }) => {
   try {
@@ -28,13 +29,14 @@ export const fetchIncomingRentals = createAsyncThunk("rentals/fetchIncoming", as
   }
 });
 
-// After updating status, re-fetch both lists so UI is always in sync
+// After updating status, re-fetch all relevant data so UI is always in sync
 export const updateRentalStatus = createAsyncThunk("rentals/updateStatus", async ({ id, action }, { dispatch, rejectWithValue }) => {
   try {
     await api.put(`/rentals/${id}/${action}`);
-    // Re-fetch fresh data from server
+    // Re-fetch rentals AND listings so availability updates instantly
     dispatch(fetchMyRentals());
     dispatch(fetchIncomingRentals());
+    dispatch(fetchMyListings()); // ← this syncs the listing availability in My Listings tab
   } catch (err) {
     return rejectWithValue(err.response?.data?.message);
   }
