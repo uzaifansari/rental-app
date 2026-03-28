@@ -17,25 +17,18 @@
   overflow: hidden;
 }
 .card-image {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
 .listing-card:hover .card-image { transform: scale(1.04); }
 
 .card-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
+  position: absolute; top: 12px; left: 12px;
   padding: 4px 10px;
-  background: rgba(14,14,14,0.8);
-  color: var(--accent);
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  background: rgba(14,14,14,0.8); color: var(--accent);
+  border-radius: 4px; font-size: 11px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase;
   backdrop-filter: blur(4px);
 }
 
@@ -43,37 +36,22 @@
 .card-owner { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
 .card-title {
   font-family: 'Playfair Display', serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 16px; font-weight: 600; color: var(--text);
+  margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-
 .card-meta {
-  display: flex;
-  gap: 12px;
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
+  display: flex; gap: 12px; font-size: 12px; color: var(--text-muted); margin-bottom: 12px;
 }
-
-.card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.card-price {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--accent);
-}
+.card-footer { display: flex; align-items: center; justify-content: space-between; }
+.card-price { font-size: 18px; font-weight: 600; color: var(--accent); }
 .card-price span { font-size: 12px; color: var(--text-muted); font-weight: 400; }
-.card-rent-btn {
-  font-size: 13px;
-  color: var(--text-muted);
-  transition: color 0.2s;
-}
+.card-rent-btn { font-size: 13px; color: var(--text-muted); transition: color 0.2s; }
 .listing-card:hover .card-rent-btn { color: var(--accent); }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .card-body { padding: 10px 12px 12px; }
+  .card-title { font-size: 14px; }
+  .card-price { font-size: 15px; }
+  .card-rent-btn { display: none; }
+}

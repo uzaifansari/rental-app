@@ -91,3 +91,11 @@
   color: var(--text-muted);
 }
 .auth-switch a { color: var(--accent); font-weight: 500; }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .auth-page { padding: 1.2rem; align-items: flex-start; padding-top: 2rem; }
+  .auth-card { padding: 1.8rem 1.2rem; }
+  .auth-header h1 { font-size: 22px; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+}

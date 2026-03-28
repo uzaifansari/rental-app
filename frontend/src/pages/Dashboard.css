@@ -5,11 +5,12 @@
 
 .dashboard-header {
   display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 2rem;
+  margin-bottom: 2rem; gap: 1rem;
 }
 .dashboard-header h1 { font-size: 2rem; margin-bottom: 4px; }
 .dash-sub { color: var(--text-muted); font-size: 14px; }
 .btn-new {
+  flex-shrink: 0;
   padding: 10px 20px; background: var(--accent); color: #0e0e0e;
   border: none; border-radius: var(--radius-sm);
   font-size: 14px; font-weight: 600; transition: background 0.2s;
@@ -18,7 +19,6 @@
 
 /* Stats */
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-@media (max-width: 640px) { .stats-row { grid-template-columns: repeat(2, 1fr); } }
 .stat-card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 1.2rem 1.5rem;
@@ -30,13 +30,14 @@
 /* Tabs */
 .dash-tabs {
   display: flex; gap: 4px; margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border); padding-bottom: 0;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
 }
 .dash-tab {
   padding: 10px 20px; background: transparent; border: none;
   color: var(--text-muted); font-size: 14px; font-weight: 500;
   border-bottom: 2px solid transparent; margin-bottom: -1px;
-  transition: all 0.2s; position: relative;
+  transition: all 0.2s; position: relative; white-space: nowrap;
 }
 .dash-tab:hover { color: var(--text); }
 .dash-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
@@ -63,8 +64,8 @@
   width: 70px; height: 90px; object-fit: cover;
   border-radius: var(--radius-sm); flex-shrink: 0;
 }
-.my-listing-info { flex: 1; }
-.my-listing-title { font-weight: 600; margin-bottom: 4px; }
+.my-listing-info { flex: 1; min-width: 0; }
+.my-listing-title { font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .my-listing-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
 .availability-tag {
   font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600;
@@ -72,6 +73,8 @@
 }
 .availability-tag.avail { background: rgba(92,184,122,0.15); color: var(--success); }
 .availability-tag.not-avail { background: rgba(224,92,92,0.15); color: var(--danger); }
+
+.my-listing-actions { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
 .btn-delete {
   padding: 7px 14px; background: transparent; border: 1px solid var(--border);
   color: var(--danger); border-radius: var(--radius-sm); font-size: 13px;
@@ -89,11 +92,11 @@
   width: 70px; height: 90px; object-fit: cover;
   border-radius: var(--radius-sm); flex-shrink: 0;
 }
-.rental-info { flex: 1; }
-.rental-title { font-weight: 600; margin-bottom: 6px; }
+.rental-info { flex: 1; min-width: 0; }
+.rental-title { font-weight: 600; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rental-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
 .rental-price { font-size: 16px; color: var(--accent); font-weight: 600; margin-top: 6px; }
-.rental-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.rental-actions { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; flex-shrink: 0; }
 .rental-status { font-size: 13px; font-weight: 600; white-space: nowrap; }
 .action-btns { display: flex; gap: 8px; }
 .btn-accept {
@@ -114,3 +117,24 @@
   transition: background 0.2s; white-space: nowrap;
 }
 .btn-complete:hover { background: rgba(201,169,110,0.2); }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .dashboard-page { padding: 1.5rem 1rem; }
+  .dashboard-header h1 { font-size: 1.6rem; }
+  .btn-new { padding: 8px 14px; font-size: 13px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  .stat-num { font-size: 1.6rem; }
+  .dash-tab { padding: 10px 14px; font-size: 13px; }
+
+  .rental-card { flex-wrap: wrap; }
+  .rental-actions { flex-direction: row; flex-wrap: wrap; width: 100%; justify-content: flex-start; margin-top: 0.5rem; }
+  .action-btns { flex-wrap: wrap; }
+
+  .my-listing-meta { font-size: 12px; }
+}
+
+@media (max-width: 400px) {
+  .my-listing-card img { width: 55px; height: 70px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}

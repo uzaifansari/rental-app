@@ -68,3 +68,30 @@
   transition: background 0.2s;
 }
 .btn-accent-sm:hover { background: var(--accent-hover); }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 1rem;
+    height: 56px;
+  }
+  .navbar-links {
+    gap: 1rem;
+  }
+  .nav-link {
+    font-size: 13px;
+  }
+  .brand-name {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+  .user-name { display: none; }
+  .btn-outline-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  .btn-accent-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
