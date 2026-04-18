@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { MapPin, MapPinOff } from "lucide-react";
 import { fetchListings } from "../redux/slices/listingSlice";
 import ListingCard from "../components/ListingCard";
 import "./Home.css";
@@ -7,20 +8,126 @@ import "./Home.css";
 const CATEGORIES = ["", "dress", "top", "bottom", "jacket", "ethnic", "accessories", "footwear", "other"];
 const SIZES = ["", "XS", "S", "M", "L", "XL", "XXL", "free size"];
 
+const getBrowserCity = () =>
+  new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocation is not supported"));
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${coords.latitude}&lon=${coords.longitude}&zoom=10&addressdetails=1`
+          );
+
+          if (!response.ok) {
+            resolve("");
+            return;
+          }
+
+          const data = await response.json();
+          const address = data.address || {};
+          const city = address.city || address.town || address.village || address.hamlet || address.suburb || address.county || address.state || "";
+
+          resolve(city);
+        } catch {
+          resolve("");
+        }
+      },
+      () => reject(new Error("Location permission denied")),
+      {
+        enableHighAccuracy: false,
+        timeout: 8000,
+        maximumAge: 10 * 60 * 1000,
+      }
+    );
+  });
+
 const Home = () => {
   const dispatch = useDispatch();
-  const { listings = [], loading } = useSelector((s) => s.listings);  // ← default to []
+  const { listings = [], loading } = useSelector((s) => s.listings);
+  const { user, token, loading: authLoading } = useSelector((s) => s.auth);
   const [filters, setFilters] = useState({ search: "", category: "", size: "", city: "" });
+  const [defaultCity, setDefaultCity] = useState("");
+  const [locationReady, setLocationReady] = useState(false);
+  const [useLocationBasedListings, setUseLocationBasedListings] = useState(true);
 
-  useEffect(() => { dispatch(fetchListings()); }, [dispatch]);
+  useEffect(() => {
+    let isMounted = true;
+
+    const resolveDefaultCity = async () => {
+      if (!user) {
+        if (isMounted) {
+          setDefaultCity("");
+          setLocationReady(true);
+        }
+        return;
+      }
+
+      const fallbackCity = user.city?.trim() || "";
+
+      try {
+        const browserCity = await getBrowserCity();
+        if (!isMounted) return;
+        setDefaultCity(browserCity || fallbackCity);
+      } catch {
+        if (!isMounted) return;
+        setDefaultCity(fallbackCity);
+      } finally {
+        if (isMounted) setLocationReady(true);
+      }
+    };
+
+    setLocationReady(false);
+
+    if (!token && !authLoading) {
+      setDefaultCity("");
+      setLocationReady(true);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    if (token && authLoading && !user) {
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    resolveDefaultCity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [authLoading, token, user]);
+
+  const effectiveFilters = useMemo(() => {
+    const params = {};
+    const manualCity = filters.city.trim();
+    const city = useLocationBasedListings ? (manualCity || defaultCity) : manualCity;
+
+    if (filters.search.trim()) params.search = filters.search.trim();
+    if (filters.category) params.category = filters.category;
+    if (filters.size) params.size = filters.size;
+    if (city) params.city = city;
+
+    return params;
+  }, [defaultCity, filters, useLocationBasedListings]);
+
+  useEffect(() => {
+    if (!locationReady) return;
+    dispatch(fetchListings(effectiveFilters));
+  }, [dispatch, effectiveFilters, locationReady]);
 
   const handleFilter = (e) => {
-    const updated = { ...filters, [e.target.name]: e.target.value };
-    setFilters(updated);
-    const params = {};
-    Object.entries(updated).forEach(([k, v]) => { if (v) params[k] = v; });
-    dispatch(fetchListings(params));
+    setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  const locationLabel = filters.city.trim() || defaultCity;
+  const showLocationListings = () => setUseLocationBasedListings(true);
+  const showAllListings = () => setUseLocationBasedListings(false);
 
   return (
     <div className="home-page">
@@ -30,6 +137,29 @@ const Home = () => {
           <p className="hero-tag">Community Fashion Rental</p>
           <h1 className="hero-title">Wear more.<br /><em>Own less.</em></h1>
           <p className="hero-sub">Rent outfits & accessories from real people in your city.</p>
+          <div className="hero-location-row">
+            <p className="hero-location">
+              {locationReady
+                ? useLocationBasedListings && locationLabel
+                  ? `Showing listings in ${locationLabel}`
+                  : "Showing all listings"
+                : "Finding your location..."}
+            </p>
+            {locationReady && locationLabel && (
+              <button
+                type="button"
+                className="hero-location-toggle"
+                onClick={useLocationBasedListings ? showAllListings : showLocationListings}
+                aria-label={useLocationBasedListings ? "Show all listings" : "Use location-based listings"}
+                title={useLocationBasedListings ? "Show all listings" : "Use location-based listings"}
+              >
+                {useLocationBasedListings ? <MapPinOff className="hero-location-icon" /> : <MapPin className="hero-location-icon" />}
+                <span className="sr-only">
+                  {useLocationBasedListings ? "Show all listings" : "Use location"}
+                </span>
+              </button>
+            )}
+          </div>
         </div>
         <div className="hero-glow" />
       </div>
