@@ -51,7 +51,7 @@ const Signup = () => {
             <div className="form-group">
               <label>Phone</label>
               <input type="text" name="phone" placeholder="+91 98765 43210"
-                value={form.phone} onChange={handleChange} />
+                value={form.phone} onChange={handleChange} required/>
             </div>
             <div className="form-group">
               <label>City</label>

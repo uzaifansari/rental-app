@@ -27,8 +27,12 @@ const RentalCard = ({ rental, isIncoming, onStatusChange }) => {
             {new Date(rental.startDate).toLocaleDateString()} → {new Date(rental.endDate).toLocaleDateString()}
           </p>
           <p className="rental-meta">📍 {rental.meetupLocation}</p>
-          {isIncoming && <p className="rental-meta">Renter: <strong>{rental.renter?.name}</strong> · {rental.renter?.phone}</p>}
-          {!isIncoming && <p className="rental-meta">Lender: <strong>{rental.lender?.name}</strong> · {rental.lender?.phone}</p>}
+          {isIncoming && (
+            <p className="rental-meta">Renter: <strong>{rental.renter?.name}</strong>{status === "accepted" && <span> · {rental.renter?.phone}</span>}</p>
+          )}
+          {!isIncoming && (
+            <p className="rental-meta">Lender: <strong>{rental.lender?.name}</strong>{status === "accepted" && <span> · {rental.lender?.phone}</span>}</p>
+          )}
           <p className="rental-price">₹{rental.totalPrice}</p>
         </div>
         <div className="rental-actions">
