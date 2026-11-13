@@ -11,7 +11,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "celeb-mvp",
+    folder: "swappable",
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
   },
 });

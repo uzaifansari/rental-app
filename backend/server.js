@@ -24,7 +24,7 @@ app.use("/api/listings", require("./routes/listingRoutes"));
 app.use("/api/rentals", require("./routes/rentalRoutes"));
 
 // Health check
-app.get("/", (req, res) => res.json({ message: "Celeb MVP API running 🚀" }));
+app.get("/", (req, res) => res.json({ message: "Swappable API running 🚀" }));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

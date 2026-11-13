@@ -25,7 +25,7 @@ const Navbar = () => {
       <nav className="navbar">
         <Link to="/" className="navbar-brand">
           <span className="brand-icon">✦</span>
-          <span className="brand-name">celeb</span>
+          <span className="brand-name">swappable</span>
         </Link>
 
         <div className="navbar-links">

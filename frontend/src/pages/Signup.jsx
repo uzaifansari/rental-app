@@ -24,7 +24,7 @@ const Signup = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <span className="auth-brand">✦ celeb</span>
+          <span className="auth-brand">✦ swappable</span>
           <h1>Create account</h1>
           <p>Start renting & lending today</p>
         </div>
